@@ -11,6 +11,12 @@ learning-rate: 1e-4
 save-interval: 1
 output-dir: output
 
+## Label Grid Maps ##
+nuscenes-raycasting: True
+nuscenes-sidewalk-is-occupied: True
+nuscenes-min-points-in-bbox: 3
+point-distance-min: [3.0, 1.5]
+
 ## Evaluation and Prediction ##
 # model-weights:
 # model-weights-epoch:

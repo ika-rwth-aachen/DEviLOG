@@ -72,11 +72,10 @@ class LidarGridMapping():
         self.grid_config = grid_map_utils.GridConfig(x_min=conf.x_min, x_max=conf.x_max, y_min=conf.y_min, y_max=conf.y_max, z_min=conf.z_min, z_max=conf.z_max, 
             step_size_x=conf.step_x_size, step_size_y=conf.step_y_size)
 
-        # TODO: config
-        self.nuscenes_raycasting = False
-        self.nuscenes_sidewalk_is_occupied = True
-        self.nuscenes_min_points_in_bbox = 3
-        self.point_distance_min = [3.0, 1.5]
+        self.nuscenes_raycasting = conf.nuscenes_raycasting
+        self.nuscenes_sidewalk_is_occupied = conf.nuscenes_sidewalk_is_occupied
+        self.nuscenes_min_points_in_bbox = conf.nuscenes_min_points_in_bbox
+        self.point_distance_min = conf.point_distance_min
 
         self.label_has_dynamic_channel = True
         if self.label_has_dynamic_channel:

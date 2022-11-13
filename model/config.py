@@ -216,6 +216,33 @@ def getConf():
                type=int,
                default=None,
                help="number of channels")
+    parser.add(
+        "-nsrc",
+        "--nuscenes-raycasting",
+        type=bool,
+        default=False,
+        help=
+        "use raycasting to remove occluded areas from the label grid map"
+    )
+    parser.add(
+        "-nssio",
+        "--nuscenes-sidewalk-is-occupied",
+        type=bool,
+        default=False,
+        help=
+        "mark sidewalks as occupied instead of free in label grid map"
+    )
+    parser.add("-nsmpib",
+               "--nuscenes-min-points-in-bbox",
+               type=int,
+               default=0,
+               help="minimum number of reflection points on bbox to be added to label grid map")
+    parser.add("-pdm",
+               "--point-distance-min",
+               type=float,
+               action='append',
+               default=None,
+               help="minimum distance for label ogm")
     conf, unknown = parser.parse_known_args()
 
     conf.label_resize_shape = [conf.label_resize_x, conf.label_resize_y]
