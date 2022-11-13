@@ -298,7 +298,7 @@ def mapToOgm(label_map, label_objects, grid_config: GridConfig, combine_occupied
     ogm_free = ogm_free[..., 0]
     # create dynamic layer from object list
     ogm_dynamic = tf.zeros_like(ogm_free)
-    ogm_dynamic = createObjectImage(label_objects, ogm_dynamic, grid_config.step_size_x, grid_config.step_size_y, min_points_in_bbox)
+    ogm_dynamic = tf.numpy_function(createObjectImage, inp=[label_objects, ogm_dynamic, grid_config.step_size_x, grid_config.step_size_y, min_points_in_bbox], Tout=tf.float32)
     # remove free where dynamic, set all other cells static
     ogm_free = tf.where(ogm_dynamic > 0.5, 0.0, ogm_free)
     ogm_static = tf.where(tf.logical_and(ogm_free < 0.5, ogm_dynamic < 0.5), 1.0, 0.0)
