@@ -292,7 +292,9 @@ class Nuscenes(tfds.core.GeneratorBasedBuilder):
                         [numpy_array_classes, numpy_array_instances], axis=1)
 
                     # object list
-                    object_list = []
+                    num_objects = len(sample_data_lidar_top[1])
+                    object_list = np.zeros([num_objects, 9], dtype=np.float32)
+                    i_object = 0
                     for ann in sample_data_lidar_top[1]:
                         sample_annotation = self.nusc.get('sample_annotation', ann.token)
                         num_lidar_pts = sample_annotation['num_lidar_pts']
@@ -306,8 +308,8 @@ class Nuscenes(tfds.core.GeneratorBasedBuilder):
                             yaw = quaternion_yaw(ann.orientation)
                             class_id = self.get_class_id(ann.name)
 
-                            object = (class_id, x, y, z, yaw, length, width, height, num_lidar_pts)
-                            object_list.append(object)
+                            object_list[i_object, :] = (class_id, x, y, z, yaw, length, width, height, num_lidar_pts)
+                            i_object += 1
 
                     if len(object_list) == 0:
                         object_list = np.empty((0, 9), dtype=np.float32)
