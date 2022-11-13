@@ -153,13 +153,20 @@ def evidences_to_masses(logits):
     return prob, u, S, num_classes
 
 
-def evidence_to_ogm(logits):
-    prob, _, _, _ = evidences_to_masses(logits)
+def evidence_to_ogm(logits, convert_to_masses = True):
+    if convert_to_masses:
+        prob, _, _, _ = evidences_to_masses(logits)
+    else:
+        prob = logits
+    
+    has_dynamic_channel = tf.shape(logits)[-1] == 3
 
     height, width = prob.shape[0:2]
     image = np.zeros([height, width, 3], dtype=np.uint8)
-    image[:, :, 1] = 255.0 * prob[:, :, 0]
-    image[:, :, 0] = 255.0 * prob[:, :, 1]
+    image[:, :, 0] = 255.0 * prob[:, :, 0]
+    image[:, :, 1] = 255.0 * prob[:, :, 1]
+    if has_dynamic_channel:
+        image[:, :, 2] = 255.0 * prob[:, :, 2]
     return image
 
 
