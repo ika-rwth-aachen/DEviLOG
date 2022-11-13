@@ -180,7 +180,7 @@ class LidarGridMapping():
 
             # save label as image
             if self.store_labels:
-                label_img = utils.evidence_to_ogm(label)
+                label_img = utils.evidence_to_ogm(label, False)
                 label_dir = os.path.join(eval_dir, "labels")
                 if not os.path.exists(label_dir):
                     os.makedirs(label_dir)
