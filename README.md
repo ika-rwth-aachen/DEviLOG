@@ -91,7 +91,7 @@ Before evaluating your trained model on the test data, set the parameter `model-
 
 ```bash
 # DEviLOG/model/
-./evaluate.py -c config.yml --input-validation ../data/input_test --label-validation ../data/label_test --model-weights output/<YOUR-TIMESTAMP>/Checkpoints/best_weights.hdf5
+./evaluate.py -c config.yml --model-weights output/<YOUR-TIMESTAMP>/Checkpoints/best_weights.hdf5
 ```
 
 The evaluation results will be exported to the `Evaluation` folder in your model directory. This also comprises a comparison between occupancy grid maps predicted by the neural network and grid maps created using a simple geometric inverse sensor model.
