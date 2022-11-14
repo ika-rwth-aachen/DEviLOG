@@ -135,22 +135,19 @@ class LidarGridMapping():
 
         # evaluation metrics
         evaluation_dict = {}
-        evaluation_dict['deep'] = {}
-        evaluation_dict['deep']['KL_distance'] = []
-        evaluation_dict['deep']['m_unknown'] = []
-        evaluation_dict['deep']['m_occupied'] = []
-        evaluation_dict['deep']['m_free'] = []
-        evaluation_dict['naive'] = {}
-        evaluation_dict['naive']['KL_distance'] = []
-        evaluation_dict['naive']['m_unknown'] = []
-        evaluation_dict['naive']['m_occupied'] = []
-        evaluation_dict['naive']['m_free'] = []
+        evaluation_dict['test_model'] = {}
+        evaluation_dict['test_model']['KL_distance'] = []
+        evaluation_dict['test_model']['m_unknown'] = []
+        evaluation_dict['test_model']['m_static'] = []
+        evaluation_dict['test_model']['m_free'] = []
+        evaluation_dict['test_model']['m_dynamic'] = []
 
         i = 0
         for sample in tqdm.tqdm(dataValid):
             input, label = sample
             pillars = tf.expand_dims(input[0], 0)
             voxels = tf.expand_dims(input[1], 0)
+            lidar = input[2]
             prediction = model.predict((pillars, voxels)).squeeze()
 
             i += 1
@@ -158,15 +155,16 @@ class LidarGridMapping():
 
             kld = tf.keras.metrics.KLDivergence()
 
-            # collect belief masses and Kullback-Leibler distance for predictions by deep ISM
+            # collect belief masses and Kullback-Leibler distance for predictions by test_model
             prob, u, _, _ = utils.evidences_to_masses(prediction)
-            evaluation_dict['deep']['m_unknown'].append(float(tf.reduce_mean(u)))
-            evaluation_dict['deep']['m_free'].append(
+            evaluation_dict['test_model']['m_unknown'].append(float(tf.reduce_mean(u)))
+            evaluation_dict['test_model']['m_static'].append(
                 float(tf.reduce_mean(prob[..., 0])))
-            evaluation_dict['deep']['m_occupied'].append(
+            evaluation_dict['test_model']['m_free'].append(
                 float(tf.reduce_mean(prob[..., 1])))
-            evaluation_dict['deep']['KL_distance'].append(float(kld(label,
-                                                                    prediction)))
+            evaluation_dict['test_model']['m_dynamic'].append(
+                float(tf.reduce_mean(prob[..., 2])))
+            evaluation_dict['test_model']['KL_distance'].append(float(kld(label, prob)))
 
             # save predicted grid map
             prediction_dir = os.path.join(eval_dir, "predictions")
@@ -215,24 +213,19 @@ class LidarGridMapping():
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
 
-        t = np.arange(0, len(evaluation_dict['naive']['m_unknown']))
-        ax1.plot(t, evaluation_dict['deep']['m_unknown'], 'b-', t,
-                evaluation_dict['deep']['m_free'], 'g-', t,
-                evaluation_dict['deep']['m_occupied'], 'r-', t,
-                evaluation_dict['naive']['m_unknown'], 'b--', t,
-                evaluation_dict['naive']['m_free'], 'g--', t,
-                evaluation_dict['naive']['m_occupied'], 'r--')
+        t = np.arange(0, len(evaluation_dict['test_model']['m_unknown']))
+        ax1.plot(t, evaluation_dict['test_model']['m_unknown'], 'k-', t,
+                evaluation_dict['test_model']['m_free'], 'g-', t,
+                evaluation_dict['test_model']['m_static'], 'r-', t,
+                evaluation_dict['test_model']['m_dynamic'], 'b-', t)
         ax1.set_ylim(0, 1.0)
         ax1.legend([
-            r'$\overline{m}(\Theta)$', r'$\overline{m}(F)$', r'$\overline{m}(O)$',
-            r'$\overline{m}_G(\Theta)$', r'$\overline{m}_G(F)$', r'$\overline{m}_G(O)$'
+            r'$\overline{m}(\Theta)$', r'$\overline{m}(F)$', r'$\overline{m}(O_s)$', r'$\overline{m}(O_d)$'
         ])
 
-        ax2.plot(t, evaluation_dict['deep']['KL_distance'], 'k-', t,
-                evaluation_dict['naive']['KL_distance'], 'k--')
+        ax2.plot(t, evaluation_dict['test_model']['KL_distance'], 'k-')
         ax2.legend([
-            r'$KL\left[Dir(p|\hat{\alpha})||Dir(p|\alpha)\right]$',
-            r'$KL\left[Dir(p|\hat{\alpha}_G)||Dir(p|\alpha)\right]$'
+            r'$KL\left[Dir(p|\hat{\alpha})||Dir(p|\alpha)\right]$'
         ])
 
         plt.savefig(os.path.join(plot_dir, 'evaluation.png'))
@@ -240,22 +233,16 @@ class LidarGridMapping():
         # store values as json file
         evaluation_json = dict()
         evaluation_json['eval_kld'] = np.vstack(
-            (t, evaluation_dict['deep']['KL_distance'])).transpose().tolist()
+            (t, evaluation_dict['test_model']['KL_distance'])).transpose().tolist()
         evaluation_json['eval_uncertainty'] = np.vstack(
-            (t, evaluation_dict['deep']['m_unknown'])).transpose().tolist()
+            (t, evaluation_dict['test_model']['m_unknown'])).transpose().tolist()
         evaluation_json['eval_prob_free'] = np.vstack(
-            (t, evaluation_dict['deep']['m_free'])).transpose().tolist()
-        evaluation_json['eval_prob_occupied'] = np.vstack(
-            (t, evaluation_dict['deep']['m_occupied'])).transpose().tolist()
+            (t, evaluation_dict['test_model']['m_free'])).transpose().tolist()
+        evaluation_json['eval_prob_static'] = np.vstack(
+            (t, evaluation_dict['test_model']['m_static'])).transpose().tolist()
+        evaluation_json['eval_prob_dynamic'] = np.vstack(
+            (t, evaluation_dict['test_model']['m_dynamic'])).transpose().tolist()
 
-        evaluation_json['eval_naive_kld'] = np.vstack(
-            (t, evaluation_dict['naive']['KL_distance'])).transpose().tolist()
-        evaluation_json['eval_naive_uncertainty'] = np.vstack(
-            (t, evaluation_dict['naive']['m_unknown'])).transpose().tolist()
-        evaluation_json['eval_naive_prob_free'] = np.vstack(
-            (t, evaluation_dict['naive']['m_free'])).transpose().tolist()
-        evaluation_json['eval_naive_prob_occupied'] = np.vstack(
-            (t, evaluation_dict['naive']['m_occupied'])).transpose().tolist()
         with open(os.path.join(raw_dir, 'evaluation.json'), 'w') as fp:
             json.dump(evaluation_json, fp)
 
@@ -334,7 +321,7 @@ class LidarGridMapping():
             self.y_min, self.y_max, self.z_min, self.z_max,
             min_distance = self.min_point_distance)
 
-        network_inputs = (pillars, voxels)
+        network_inputs = (pillars, voxels, lidar)
         if label_raw is not None:
             network_labels = (grid_map)
         else:
