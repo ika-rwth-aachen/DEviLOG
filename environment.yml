@@ -1,0 +1,19 @@
+name: devilog
+channels:
+  - conda-forge
+dependencies:
+  - cmake>=3.23.3
+  - cudatoolkit-dev=11.2
+  - cudnn=8.1.0
+  - pip>=22.2.1
+  - python=3.8.10
+  - pip:
+    - -r requirements.txt
+
+# Set system paths s.t. TensorFlow successfully finds CUDA.
+#   https://github.com/tensorflow/tensorflow/issues/52988#issuecomment-1024604306
+#   https://github.com/tensorflow/tensorflow/issues/52988#issuecomment-1160849524
+#   Note that below specification is not working, since environment variables are not substituted.
+#   Must be set manually via 'conda env config vars set LD_PRELOAD="..."'.
+# variables: 
+#  LD_PRELOAD: $CONDA_PREFIX/lib/libcudart.so:$CONDA_PREFIX/lib/libcublas.so:$CONDA_PREFIX/lib/libcublasLt.so:$CONDA_PREFIX/lib/libcufft.so:$CONDA_PREFIX/lib/libcurand.so:$CONDA_PREFIX/lib/libcusolver.so:$CONDA_PREFIX/lib/libcusparse.so:$CONDA_PREFIX/lib/libcudnn.so

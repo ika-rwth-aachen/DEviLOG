@@ -1,0 +1,14 @@
+configargparse~=1.5.3
+matplotlib~=3.5.2
+numpy>=1.22.4
+nuscenes-devkit~=1.1.9
+opencv-python~=4.6.0.66
+pyntcloud~=0.3.1
+scikit-image~=0.19.3
+tensorboard~=2.9.0
+tensorboard-plugin-profile~=2.8.0
+tensorflow==2.9.1
+tensorflow-addons==0.17.1
+tensorflow-datasets==4.6.0
+tqdm~=4.64.0
+git+https://github.com/ika-rwth-aachen/PointPillars.git
