@@ -28,6 +28,7 @@ TODO
 - [Installation](#installation)
 - [Data](#data)
 - [Training](#training)
+- [Evaluation](#evaluation)
 
 ## Installation
 
@@ -67,15 +68,11 @@ tensorflow_datasets/downloads/manual/
     v1.0-mini/  # or 'v1.0-trainval'
 ```
 
-## Training
-
-Use the scripts [model/train.py](model/train.py), [model/evaluate.py](model/evaluate.py), and [model/predict.py](model/predict.py) to train a model, evaluate it on validation data, and make predictions on a testing dataset or the provided real-world input point clouds.
-
-Input directories, training parameters, and more can be set via CLI arguments or in a config file. Run the scripts with `--help`-flag or see one of the provided exemplary config files for reference.
-
 ### Training
 
-Start training the model by passing the provided config file [model/config.yml](model/config.yml).
+You can train a model to predict occupancy grid maps from lidar point clouds using training data created from the nuScenes dataset.
+
+Start training the model by passing the provided [config file](model/config.yml) to the [training script](model/train.py).
 
 ```bash
 # DEviLOG/model/
@@ -94,30 +91,7 @@ Before evaluating your trained model on the test data, set the parameter `model-
 ./evaluate.py -c config.yml --model-weights output/<YOUR-TIMESTAMP>/Checkpoints/best_weights.hdf5
 ```
 
-The evaluation results will be exported to the `Evaluation` folder in your model directory. This also comprises a comparison between occupancy grid maps predicted by the neural network and grid maps created using a simple geometric inverse sensor model.
-
-**Left**: Input lidar point cloud. **Middle**: baseline OGM created by geometric ISM. **Right**: OGM predicted by deep ISM
-
-![evaluation on test data](./assets/TODO.gif)
-
-
-### Testing
-
-To actually see the predictions your network makes, try it out on unseen input point clouds, such as the provided test data or real-world input point clouds. The predicted occupancy grid maps are exported to the directory specified by the parameter `output-dir-testing`.
-
-Prediction using **synthetic test data**:
-
-```bash
-# EviLOG/model/
-./predict.py -c config.yml --model-weights output/<YOUR-TIMESTAMP>/Checkpoints/best_weights.hdf5 --prediction-dir output/<YOUR-TIMESTAMP>/Predictions
-```
-
-Prediction using **real-world input point clouds**:
-
-```bash
-# EviLOG/model/
-./predict.py -c config.yml --input-testing ../data/input_real --model-weights output/<YOUR-TIMESTAMP>/Checkpoints/best_weights.hdf5 --prediction-dir output/<YOUR-TIMESTAMP>/Predictions-Real
-```
+The evaluation results will be exported to the `Evaluation` folder in your model directory.
 
 ## Acknowledgement
 

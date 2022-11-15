@@ -230,6 +230,18 @@ class LidarGridMapping():
 
         plt.savefig(os.path.join(plot_dir, 'evaluation.png'))
 
+        # create boxplots
+        fig = plt.figure()
+        ax = fig.add_subplot(151)
+        ax.set_title('KL Divergence')
+        ax.boxplot(evaluation_dict['test_model']['KL_distance'])
+        
+        ax = fig.add_subplot(152)
+        ax.set_title('m_unknown')
+        ax.boxplot(evaluation_dict['test_model']['m_unknown'])
+        
+        plt.savefig(os.path.join(plot_dir, 'boxplots.png'))
+
         # store values as json file
         evaluation_json = dict()
         evaluation_json['eval_kld'] = np.vstack(
