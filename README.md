@@ -1,13 +1,9 @@
-# WIP: This repository is under construction!
-
 # DEviLOG: Dynamic Evidential Lidar Occupancy Grid Mapping
 
 This repository provides the dataset as well as the training pipeline that was used in our paper:
 
-[![ICECCME 2022 Presentation](assets/TODO.png)](https://www.youtube.com/watch?v=TODO)
-
 > **Data-Driven Occupancy Grid Mapping using Synthetic and Real-World Data**
-> [arXiv](https://arxiv.org/abs/2211.08278))  
+> [IEEE Xplore](https://ieeexplore.ieee.org/document/9988605), [arXiv](https://arxiv.org/abs/2211.08278)
 >
 > [Raphael van Kempen](https://www.ika.rwth-aachen.de/en/institute/staff/raphael-van-kempen-msc.html), [Bastian Lampe](https://www.ika.rwth-aachen.de/en/institute/staff/bastian-lampe-m-sc.html), [Lennart Reiher](https://www.ika.rwth-aachen.de/en/institute/staff/lennart-reiher-msc.html), [Timo Woopen](https://www.ika.rwth-aachen.de/en/institute/management/timo-woopen-msc.html), [Till Beemelmanns](https://www.ika.rwth-aachen.de/en/institute/staff/till-beemelmanns-msc.html), and [Lutz Eckstein](https://www.ika.rwth-aachen.de/en/institute/management/univ-prof-dr-ing-lutz-eckstein.html)  
 > [Institute for Automotive Engineering (ika), RWTH Aachen University](https://www.ika.rwth-aachen.de/en/)
@@ -20,14 +16,12 @@ dataset. Next, we analyze the ability of both approaches to cope with a domain s
 We hope our paper and code can help in your research. If this is the case, please cite:
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2211.08278,
-  doi = {10.48550/ARXIV.2211.08278},  
-  url = {https://arxiv.org/abs/2211.08278},
-  author = {van Kempen, Raphael and Lampe, Bastian and Reiher, Lennart and Woopen, Timo and Beemelmanns, Till and Eckstein, Lutz},
-  title = {Data-Driven Occupancy Grid Mapping using Synthetic and Real-World Data},
-  year = {2022},
-  copyright = {Creative Commons Attribution Non Commercial Share Alike 4.0 International}
-}
+@INPROCEEDINGS{9988605,
+  author={van Kempen, Raphael and Lampe, Bastian and Reiher, Lennart and Woopen, Timo and Beemelmanns, Till and Eckstein, Lutz},
+  booktitle={2022 International Conference on Electrical, Computer, Communications and Mechatronics Engineering (ICECCME)}, 
+  title={Data-Driven Occupancy Grid Mapping using Synthetic and Real-World Data}, 
+  year={2022},
+  doi={10.1109/ICECCME55909.2022.9988605}}
 ```
 
 ## Content
